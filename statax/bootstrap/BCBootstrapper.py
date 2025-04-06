@@ -5,7 +5,7 @@ import jax.numpy as jnp
 from jax.scipy.stats import norm
 
 
-class TBootstrapper(Bootstrapper):
+class BCBootstrapper(Bootstrapper):
     def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
         p0 = jnp.mean(self.bootstrap_replicates < self.theta_hat)
         z0 = norm.ppf(p0)

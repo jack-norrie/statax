@@ -5,7 +5,7 @@ import jax.numpy as jnp
 from jax.scipy.stats import norm
 
 
-class TBootstrapper(Bootstrapper):
+class StandardBootstrapper(Bootstrapper):
     def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
