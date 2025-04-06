@@ -33,17 +33,18 @@ class Bootstrapper(ABC):
         return data_resampled
 
     def resample(self, data: jax.Array, n_resamples: int = 2000, seed: int = 42) -> None:
-        rng_key = random.key(seed)
-
         theta_hat = self._statistic(data)
 
-        self._bootstrap_replicates = jnp.empty((n_resamples, *theta_hat.shape))
-        for b in range(n_resamples):
-            rng_key, rng_subkey = random.split(rng_key)
-            data_resampled = self._resample_data(data, rng_subkey)
-
+        @jax.vmap
+        def _generate_bootstrap_replicate(rng_key: jax.Array) -> jax.Array:
+            data_resampled = self._resample_data(data, rng_key)
             theta_boot = self._statistic(data_resampled)
-            self._bootstrap_replicates = self._bootstrap_replicates.at[b].set(theta_boot)
+            return theta_boot
+
+        rng_key = random.key(seed)
+        rng_subkeys = random.split(rng_key, n_resamples)
+        del rng_key  # good practice.
+        self._bootstrap_replicates = _generate_bootstrap_replicate(rng_subkeys)
 
     def variance(self):
         pass
