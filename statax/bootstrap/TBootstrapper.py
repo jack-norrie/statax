@@ -10,13 +10,13 @@ class TBootstrapper(Bootstrapper):
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
-            low = 2 * self.theta_hat - jnp.quantile(bootstrap_t_statistics, 1 - alpha / 2)
-            high = 2 * self.theta_hat - jnp.quantile(bootstrap_t_statistics, alpha / 2)
+            low = self.theta_hat - jnp.quantile(bootstrap_t_statistics, 1 - alpha / 2) * self.variance()
+            high = self.theta_hat - jnp.quantile(bootstrap_t_statistics, alpha / 2) * self.variance()
         elif alternative == CIType.LESS:
             low = -jnp.inf
-            high = 2 * self.theta_hat - jnp.quantile(bootstrap_t_statistics, alpha)
+            high = self.theta_hat - jnp.quantile(bootstrap_t_statistics, alpha) * self.variance()
         elif alternative == CIType.GREATER:
-            low = 2 * self.theta_hat - jnp.quantile(bootstrap_t_statistics, 1 - alpha)
+            low = self.theta_hat - jnp.quantile(bootstrap_t_statistics, 1 - alpha) * self.variance()
             high = jnp.inf
         else:
             raise ValueError(f"Invalid alternaive passed, must be of type: {CIType}")
