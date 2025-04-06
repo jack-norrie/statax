@@ -2,11 +2,12 @@ import jax.numpy as jnp
 from jax import random
 import pytest
 
-from statax.bootstrap.Bootstrapper import Bootstrapper, CITypes
+from statax.bootstrap.Bootstrapper import Bootstrapper
+from statax.bootstrap.types import CIType
 
 
 class MockBootstrapper(Bootstrapper):
-    def ci(self, size: float, alternative: CITypes = CITypes.TWO_SIDED) -> tuple[float, float]:
+    def ci(self, size: float, alternative: CIType = CIType.TWO_SIDED) -> tuple[float, float]:
         return (0.0, 1.0)
 
 

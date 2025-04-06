@@ -1,17 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Callable
-from enum import StrEnum, auto
+
 
 import jax
 from jax import Array, random
 import jax.numpy as jnp
-from jaxlib.mlir.ir import Value
 
-
-class CITypes(StrEnum):
-    TWO_SIDED = auto()
-    LESS = auto()
-    GREATER = auto()
+from statax.bootstrap.types import CIType
 
 
 class Bootstrapper(ABC):
@@ -59,7 +54,7 @@ class Bootstrapper(ABC):
         pass
 
     @abstractmethod
-    def ci(self, size: float, alternative: CITypes) -> tuple[float, float]:
+    def ci(self, size: float, alternative: CIType) -> tuple[float, float]:
         raise NotImplementedError
 
     def plot_bootstrap_distribution(self) -> None:
