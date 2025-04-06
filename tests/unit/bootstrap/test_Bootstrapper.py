@@ -48,6 +48,13 @@ class TestBootstrapper:
 
         assert not all_equal
 
+    def test_statistic(self, median_bootstrapper):
+        n_resamples = 5
+        data = jnp.arange(5, 19 + 1)  # [5, 20] -> middle is 12
+        median_bootstrapper.resample(data, n_resamples=n_resamples)
+
+        assert median_bootstrapper.theta_hat == 12
+
 
 if __name__ == "__main__":
     pytest.main()
