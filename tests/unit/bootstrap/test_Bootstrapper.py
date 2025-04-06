@@ -1,5 +1,6 @@
 import jax.numpy as jnp
 from jax import random
+from numpy import median
 import pytest
 
 from statax.bootstrap.Bootstrapper import Bootstrapper
@@ -16,6 +17,11 @@ def median_bootstrapper():
     return MockBootstrapper(jnp.median)
 
 
+@pytest.fixture(scope="function")
+def mean_bootstrapper():
+    return MockBootstrapper(jnp.mean)
+
+
 class TestBootstrapper:
 
     def test_data_resampling(self, median_bootstrapper):
@@ -23,7 +29,7 @@ class TestBootstrapper:
         rng_key, rng_subkey = random.split(rng_key)
 
         data = jnp.arange(10)
-        data_resampled = median_bootstrapper._resample_data(data, rng_key)
+        data_resampled = median_bootstrapper._resample_data(data, rng_subkey)
 
         assert data.shape == data_resampled.shape
 
@@ -55,6 +61,18 @@ class TestBootstrapper:
         median_bootstrapper.resample(data, n_resamples=n_resamples)
 
         assert median_bootstrapper.theta_hat == 12
+
+    def test_variance(self, mean_bootstrapper):
+        rng_key = random.key(42)
+        rng_key, rng_subkey = random.split(rng_key)
+
+        n_samples = 1000
+        data = random.normal(rng_subkey, shape=(n_samples,))
+
+        n_resamples = 10_000
+        mean_bootstrapper.resample(data, n_resamples=n_resamples)
+
+        assert jnp.isclose(mean_bootstrapper.variance(), 1 / n_samples, rtol=0.1)
 
 
 if __name__ == "__main__":

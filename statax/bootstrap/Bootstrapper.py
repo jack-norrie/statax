@@ -51,7 +51,7 @@ class Bootstrapper(ABC):
         self._bootstrap_replicates = _generate_bootstrap_replicate(rng_subkeys)
 
     def variance(self):
-        pass
+        return jnp.var(self.bootstrap_replicates)
 
     @abstractmethod
     def ci(self, size: float, alternative: CIType) -> tuple[float, float]:
