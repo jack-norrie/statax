@@ -17,6 +17,6 @@ class BasicBootstrapper(Bootstrapper):
             low = 2 * self.theta_hat - jnp.quantile(self.bootstrap_replicates, 1 - alpha)
             high = jnp.inf
         else:
-            raise ValueError(f"Invalid alternaive passed, must be of type: {CIType}")
+            raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")
 
         return (float(low), float(high))

@@ -18,6 +18,6 @@ class PercentileBootstrapper(Bootstrapper):
             low = jnp.quantile(self.bootstrap_replicates, alpha)
             high = jnp.inf
         else:
-            raise ValueError(f"Invalid alternaive passed, must be of type: {CIType}")
+            raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")
 
         return (float(low), float(high))

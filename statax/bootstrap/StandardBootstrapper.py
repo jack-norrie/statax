@@ -18,6 +18,6 @@ class StandardBootstrapper(Bootstrapper):
             low = self.theta_hat + norm.ppf(alpha) * self.variance()
             high = jnp.inf
         else:
-            raise ValueError(f"Invalid alternaive passed, must be of type: {CIType}")
+            raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")
 
         return (float(low), float(high))

@@ -10,8 +10,11 @@ class BCBootstrapper(Bootstrapper):
         p0 = jnp.mean(self.bootstrap_replicates < self.theta_hat)
         z0 = norm.ppf(p0)
 
+        a = 1
+
         def percentile_modifier(beta: float):
-            return norm.cdf(2 * z0 + norm.ppf(beta))
+            zb = norm.ppf(beta)
+            return norm.cdf(z0 + (z0 + zb) / (1 - a * (z0 + zb)))
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
@@ -24,6 +27,6 @@ class BCBootstrapper(Bootstrapper):
             low = jnp.quantile(self.bootstrap_replicates, percentile_modifier(alpha))
             high = jnp.inf
         else:
-            raise ValueError(f"Invalid alternaive passed, must be of type: {CIType}")
+            raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")
 
         return (float(low), float(high))
