@@ -1,16 +1,26 @@
 from statax.bootstrap.Bootstrapper import Bootstrapper
+from statax.jackknife import JackKnife
 from statax.bootstrap.types import CIType
+import jax
 
 import jax.numpy as jnp
 from jax.scipy.stats import norm
 
 
 class BCaBootstrapper(Bootstrapper):
+    def resample(self, data: jax.Array, n_resamples: int = 2000, seed: int = 42) -> None:
+        super().resample(data, n_resamples, seed)
+
+        # Add jackknife resampling such that skew can be estiamted
+        jackknife = JackKnife(self._statistic)
+        jackknife.resample(data)
+        self._jackknife_skew = jackknife.skew()
+
     def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
         p0 = jnp.mean(self.bootstrap_replicates < self.theta_hat)
         z0 = norm.ppf(p0)
 
-        a = 1
+        a = self._jackknife_skew
 
         def percentile_modifier(beta: float):
             zb = norm.ppf(beta)
