@@ -23,7 +23,7 @@ class JackKnife:
         jackknife_mean = self._mean
         if jackknife_mean is None:
             raise ValueError("JackKnife mean has not been generated yet. You must call resample() first.")
-        return self.mean
+        return jackknife_mean
 
     @staticmethod
     def leave_one_out(data: jax.Array, i: jax.Array) -> jax.Array:
