@@ -11,10 +11,10 @@ class StandardBootstrapper(Bootstrapper):
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
             low = self.theta_hat + norm.ppf(alpha / 2) * jnp.sqrt(self.variance())
-            high = self.theta_hat + norm.pdf(1 - alpha / 2) * jnp.sqrt(self.variance())
+            high = self.theta_hat + norm.ppf(1 - alpha / 2) * jnp.sqrt(self.variance())
         elif alternative == CIType.LESS:
             low = jax.Array(-jnp.inf)
-            high = self.theta_hat + norm.pdf(1 - alpha) * jnp.sqrt(self.variance())
+            high = self.theta_hat + norm.ppf(1 - alpha) * jnp.sqrt(self.variance())
         elif alternative == CIType.GREATER:
             low = self.theta_hat + norm.ppf(alpha) * jnp.sqrt(self.variance())
             high = jax.Array(jnp.inf)
