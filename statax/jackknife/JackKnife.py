@@ -46,7 +46,6 @@ class JackKnife:
         self._mean = jnp.mean(self.replicates)
 
     def std(self):
-        replicates = self.replicates
         return jnp.sqrt(self.variance())
 
     def variance(self):
