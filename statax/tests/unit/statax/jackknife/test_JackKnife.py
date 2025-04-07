@@ -21,7 +21,7 @@ class TestJackKnife:
 
         jackknife.resample(data)
 
-        assert len(jackknife.jackknife_replicates) == n
+        assert len(jackknife.replicates) == n
 
     def test_replicates_values(self, jackknife):
         n = 3
