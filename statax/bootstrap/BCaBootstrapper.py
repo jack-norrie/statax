@@ -5,13 +5,16 @@ import jax.numpy as jnp
 from jax.scipy.stats import norm
 
 
-class BCBootstrapper(Bootstrapper):
+class BCaBootstrapper(Bootstrapper):
     def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
         p0 = jnp.mean(self.bootstrap_replicates < self.theta_hat)
         z0 = norm.ppf(p0)
 
+        a = 1
+
         def percentile_modifier(beta: float):
-            return norm.cdf(2 * z0 + norm.ppf(beta))
+            zb = norm.ppf(beta)
+            return norm.cdf(z0 + (z0 + zb) / (1 - a * (z0 + zb)))
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
