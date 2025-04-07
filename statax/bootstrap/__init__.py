@@ -1,3 +1,4 @@
+from .Bootstrapper import Bootstrapper
 from .BasicBootstrap import BasicBootstrapper
 from .TBootstrapper import TBootstrapper
 from .StandardBootstrapper import StandardBootstrapper

@@ -54,7 +54,7 @@ class Bootstrapper(ABC):
         return jnp.var(self.bootstrap_replicates)
 
     @abstractmethod
-    def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
+    def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[float, float]:
         raise NotImplementedError
 
     def plot_bootstrap_distribution(self) -> None:

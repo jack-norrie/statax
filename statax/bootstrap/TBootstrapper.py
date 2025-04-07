@@ -5,7 +5,7 @@ import jax.numpy as jnp
 
 
 class TBootstrapper(Bootstrapper):
-    def ci(self, confidence_level: float, alternative: CIType) -> tuple[float, float]:
+    def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[float, float]:
         bootstrap_t_statistics = (self.bootstrap_replicates - self.theta_hat) / self.variance()
 
         alpha = 1 - confidence_level
