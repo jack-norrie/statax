@@ -1,3 +1,4 @@
+import jax
 import jax.numpy as jnp
 from jax.scipy.stats import norm
 

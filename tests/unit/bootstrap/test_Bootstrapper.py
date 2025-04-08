@@ -8,7 +8,7 @@ from statax.bootstrap.types import CIType
 
 
 class MockBootstrapper(Bootstrapper):
-    def ci(self, size: float, alternative: CIType = CIType.TWO_SIDED) -> tuple[float, float]:
+    def ci(self, size: float, alternative: CIType = CIType.TWO_SIDED) -> tuple[jax.Array, jax.Array]:
         return (0.0, 1.0)
 
 

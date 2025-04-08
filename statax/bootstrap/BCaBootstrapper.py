@@ -6,10 +6,12 @@ from statax.bootstrap.Bootstrapper import Bootstrapper
 from statax.bootstrap.types import CIType
 from statax.jackknife import JackKnife
 
+from jax import random
+
 
 class BCaBootstrapper(Bootstrapper):
-    def resample(self, data: jax.Array, n_resamples: int = 2000, seed: int = 42) -> None:
-        super().resample(data, n_resamples, seed)
+    def resample(self, data: jax.Array, n_resamples: int = 2000, key: jax.Array = random.key(42)) -> None:
+        super().resample(data, n_resamples, key)
 
         # Add jackknife resampling such that skew can be estiamted
         jackknife = JackKnife(self._statistic)

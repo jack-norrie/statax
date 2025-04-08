@@ -34,7 +34,9 @@ class Bootstrapper(ABC):
         data_resampled = data.at[resampled_idxs].get()
         return data_resampled
 
-    def resample(self, data: jax.Array, n_resamples: int = 2000, seed: int = 42) -> None:
+    def resample(self, data: jax.Array, n_resamples: int = 2000, key: jax.Array = random.key(42)) -> None:
+        key, subkey = random.split(key)
+
         self._theta_hat = self._statistic(data)
 
         @jax.vmap
@@ -44,10 +46,7 @@ class Bootstrapper(ABC):
             theta_boot = self._statistic(data_resampled)
             return theta_boot
 
-        rng_key = random.key(seed)
-        rng_subkeys = random.split(rng_key, n_resamples)
-        del rng_key  # good practice.
-        self._bootstrap_replicates = _generate_bootstrap_replicate(rng_subkeys)
+        self._bootstrap_replicates = _generate_bootstrap_replicate(random.split(subkey, n_resamples))
 
     def variance(self):
         return jnp.var(self.bootstrap_replicates)
