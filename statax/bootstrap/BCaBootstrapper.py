@@ -16,7 +16,7 @@ class BCaBootstrapper(Bootstrapper):
         # Add jackknife resampling such that skew can be estiamted
         jackknife = JackKnife(self._statistic)
         jackknife.resample(data)
-        self._jackknife_skew = jackknife.skew()
+        self._jackknife_skew = -jackknife.skew()
 
     def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[jax.Array, jax.Array]:
         p0 = jnp.mean(self.bootstrap_replicates <= self.theta_hat)
