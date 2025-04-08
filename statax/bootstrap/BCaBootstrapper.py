@@ -19,7 +19,7 @@ class BCaBootstrapper(Bootstrapper):
         self._jackknife_skew = jackknife.skew()
 
     def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[jax.Array, jax.Array]:
-        p0 = jnp.mean(self.bootstrap_replicates < self.theta_hat)
+        p0 = jnp.mean(self.bootstrap_replicates <= self.theta_hat)
         z0 = norm.ppf(p0)
 
         a = self._jackknife_skew
