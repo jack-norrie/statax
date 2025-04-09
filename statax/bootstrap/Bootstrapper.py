@@ -54,6 +54,3 @@ class Bootstrapper(ABC):
     @abstractmethod
     def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[jax.Array, jax.Array]:
         raise NotImplementedError
-
-    def plot_bootstrap_distribution(self) -> None:
-        pass
