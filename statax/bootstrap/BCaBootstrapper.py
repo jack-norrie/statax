@@ -5,11 +5,17 @@ from jax.scipy.stats import norm
 from statax.bootstrap.Bootstrapper import Bootstrapper
 from statax.bootstrap.types import CIType
 from statax.jackknife import JackKnife
+from typing import Callable
 
 from jax import random
 
 
 class BCaBootstrapper(Bootstrapper):
+    def __init__(self, statistic: Callable):
+        super().__init__(statistic)
+
+        self._jackknife_skew = None
+
     def resample(self, data: jax.Array, n_resamples: int = 2000, key: jax.Array = random.key(42)) -> None:
         super().resample(data, n_resamples, key)
 
