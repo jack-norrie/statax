@@ -122,9 +122,3 @@ class JackKnife:
         replicates = self.replicates
         n = len(replicates)
         return (n - 1) / n * jnp.sum(jnp.square(replicates - self.mean))
-
-    def skew(self) -> jax.Array:
-        replicates = self.replicates
-        return (jnp.sum(jnp.power(replicates - self.mean, 3))) / (
-            6 * jnp.power(jnp.sum(jnp.power(replicates - self.mean, 2)), 1.5)
-        )

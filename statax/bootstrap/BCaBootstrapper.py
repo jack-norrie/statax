@@ -14,7 +14,24 @@ class BCaBootstrapper(Bootstrapper):
     def __init__(self, statistic: Callable):
         super().__init__(statistic)
 
-        self._jackknife_skew = None
+        self._acceleration = None
+        self._jn_replicates = None
+
+    @property
+    def jn_replicates(self) -> jax.Array:
+        """
+        Get the array of jackknife replicate values.
+
+        Returns:
+            Array of bootstrap replicate values.
+
+        Raises:
+            ValueError: If resample() has not been called yet.
+        """
+        jn_replicates = self._jn_replicates
+        if jn_replicates is None:
+            raise ValueError("Jackknife replicates have not been generated yet. You must call resample() first.")
+        return jn_replicates
 
     def resample(self, data: jax.Array, n_resamples: int = 2000, key: jax.Array = random.key(42)) -> None:
         """
@@ -34,10 +51,9 @@ class BCaBootstrapper(Bootstrapper):
         """
         super().resample(data, n_resamples, key)
 
-        # Add jackknife resampling such that skew can be estiamted
         jackknife = JackKnife(self._statistic)
-        jackknife.resample(data)
-        self._jackknife_skew = -jackknife.skew()
+        jackknife.resample(self.replicates)
+        self._jn_replicates = jackknife._replicates
 
     def ci(self, confidence_level: float = 0.95, alternative: CIType = CIType.TWO_SIDED) -> tuple[jax.Array, jax.Array]:
         """
@@ -53,10 +69,14 @@ class BCaBootstrapper(Bootstrapper):
         Returns:
             A tuple containing the lower and upper bounds of the confidence interval.
         """
-        p0 = jnp.mean(self.bootstrap_replicates <= self.theta_hat)
+        p0 = jnp.mean(self.replicates <= self.theta_hat)
         z0 = norm.ppf(p0)
 
-        a = self._jackknife_skew
+        jn_replicates = self.jn_replicates
+        jn_mean = jnp.mean(jn_replicates)
+        a = jnp.sum(jnp.power(jn_mean - jn_replicates, 3)) / (
+            6 * jnp.power(jnp.sum(jnp.power(jn_mean - jn_replicates, 2)), 1.5)
+        )
 
         def percentile_modifier(beta: float):
             zb = norm.ppf(beta)
@@ -64,13 +84,13 @@ class BCaBootstrapper(Bootstrapper):
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
-            low = jnp.quantile(self.bootstrap_replicates, percentile_modifier(alpha / 2))
-            high = jnp.quantile(self.bootstrap_replicates, percentile_modifier(1 - alpha / 2))
+            low = jnp.quantile(self.replicates, percentile_modifier(alpha / 2))
+            high = jnp.quantile(self.replicates, percentile_modifier(1 - alpha / 2))
         elif alternative == CIType.LESS:
             low = jax.Array(-jnp.inf)
-            high = jnp.quantile(self.bootstrap_replicates, percentile_modifier(1 - alpha))
+            high = jnp.quantile(self.replicates, percentile_modifier(1 - alpha))
         elif alternative == CIType.GREATER:
-            low = jnp.quantile(self.bootstrap_replicates, percentile_modifier(alpha))
+            low = jnp.quantile(self.replicates, percentile_modifier(alpha))
             high = jax.Array(jnp.inf)
         else:
             raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")
