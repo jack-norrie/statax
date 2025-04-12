@@ -26,9 +26,17 @@ Although, there is certainly scope for this project to expand in the future.
 
 ## Installation
 
+### Package
+
+This package is hosted on [PyPI](https://pypi.org/project/statax/) and as such can be installed with most popular package managers. For example, to install this package using `pip`  simply use the command:
+
+```
+pip install statax
+```
+
 ### Development
 
-This project uses [uv](https://docs.astral.sh/uv/) for package management.
+This project uses [uv](https://docs.astral.sh/uv/) for package management. Therefore, if you would like to contribute to this project please use `uv` to track any changes to the project's dependencies.
 
 ```bash
 git clone https://github.com/jack-norrie/statax.git
