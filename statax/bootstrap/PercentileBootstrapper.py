@@ -22,13 +22,13 @@ class PercentileBootstrapper(Bootstrapper):
         """
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
-            low = jnp.quantile(self.bootstrap_replicates, alpha / 2)
-            high = jnp.quantile(self.bootstrap_replicates, 1 - alpha / 2)
+            low = jnp.quantile(self.replicates, alpha / 2)
+            high = jnp.quantile(self.replicates, 1 - alpha / 2)
         elif alternative == CIType.LESS:
             low = jax.Array(-jnp.inf)
-            high = jnp.quantile(self.bootstrap_replicates, 1 - alpha)
+            high = jnp.quantile(self.replicates, 1 - alpha)
         elif alternative == CIType.GREATER:
-            low = jnp.quantile(self.bootstrap_replicates, alpha)
+            low = jnp.quantile(self.replicates, alpha)
             high = jax.Array(jnp.inf)
         else:
             raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")

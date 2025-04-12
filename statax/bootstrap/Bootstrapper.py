@@ -45,7 +45,7 @@ class Bootstrapper(ABC):
         return theta_hat
 
     @property
-    def bootstrap_replicates(self) -> jax.Array:
+    def replicates(self) -> jax.Array:
         """
         Get the array of bootstrap replicate values.
 
@@ -135,4 +135,4 @@ class Bootstrapper(ABC):
         Raises:
             ValueError: If resample() has not been called yet.
         """
-        return jnp.var(self.bootstrap_replicates)
+        return jnp.var(self.replicates)

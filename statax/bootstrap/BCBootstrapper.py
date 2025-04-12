@@ -21,9 +21,9 @@ class BCBootstrapper(Bootstrapper):
         Returns:
             A tuple containing the lower and upper bounds of the confidence interval.
         """
-        bootstrap_replicates = self.bootstrap_replicates
+        bootstrap_replicates = self.replicates
         theta_hat = self.theta_hat
-        p0 = jnp.mean(self.bootstrap_replicates <= self.theta_hat)
+        p0 = jnp.mean(self.replicates <= self.theta_hat)
         z0 = norm.ppf(p0)
 
         def percentile_modifier(beta: float):
@@ -31,13 +31,13 @@ class BCBootstrapper(Bootstrapper):
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
-            low = jnp.quantile(self.bootstrap_replicates, percentile_modifier(alpha / 2))
-            high = jnp.quantile(self.bootstrap_replicates, percentile_modifier(1 - alpha / 2))
+            low = jnp.quantile(self.replicates, percentile_modifier(alpha / 2))
+            high = jnp.quantile(self.replicates, percentile_modifier(1 - alpha / 2))
         elif alternative == CIType.LESS:
             low = jax.Array(-jnp.inf)
-            high = jnp.quantile(self.bootstrap_replicates, percentile_modifier(1 - alpha))
+            high = jnp.quantile(self.replicates, percentile_modifier(1 - alpha))
         elif alternative == CIType.GREATER:
-            low = jnp.quantile(self.bootstrap_replicates, percentile_modifier(alpha))
+            low = jnp.quantile(self.replicates, percentile_modifier(alpha))
             high = jax.Array(jnp.inf)
         else:
             raise ValueError(f"Invalid alternative passed, must be of type: {CIType}")

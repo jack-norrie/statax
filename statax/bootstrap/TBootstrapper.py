@@ -20,7 +20,7 @@ class TBootstrapper(Bootstrapper):
         Returns:
             A tuple containing the lower and upper bounds of the confidence interval.
         """
-        bootstrap_t_statistics = (self.bootstrap_replicates - self.theta_hat) / jnp.sqrt(self.variance())
+        bootstrap_t_statistics = (self.replicates - self.theta_hat) / jnp.sqrt(self.variance())
 
         alpha = 1 - confidence_level
         if alternative == CIType.TWO_SIDED:
