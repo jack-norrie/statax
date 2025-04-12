@@ -1,7 +1,7 @@
+import jax
 import jax.numpy as jnp
-from jax import random
-from numpy import median
 import pytest
+from jax import random
 
 from statax.bootstrap.Bootstrapper import Bootstrapper
 from statax.bootstrap.types import CIType
@@ -24,7 +24,7 @@ def mean_bootstrapper():
 
 class TestBootstrapper:
 
-    def test_data_resampling(self, median_bootstrapper):
+    def test_data_resampling_shape(self, median_bootstrapper):
         rng_key = random.key(42)
         rng_key, rng_subkey = random.split(rng_key)
 
@@ -33,12 +33,12 @@ class TestBootstrapper:
 
         assert data.shape == data_resampled.shape
 
-    def test_resampling(self, median_bootstrapper):
+    def test_resampling_shape(self, median_bootstrapper):
         n_resamples = 5
         data = jnp.arange(10)
         median_bootstrapper.resample(data, n_resamples=n_resamples)
 
-        assert len(median_bootstrapper.bootstrap_replicates) == n_resamples
+        assert len(median_bootstrapper.replicates) == n_resamples
 
     def test_resampling_variability(self, median_bootstrapper):
         n_resamples = 100
@@ -46,9 +46,9 @@ class TestBootstrapper:
         median_bootstrapper.resample(data, n_resamples=n_resamples)
 
         all_equal = True
-        first_value = median_bootstrapper.bootstrap_replicates[0]
+        first_value = median_bootstrapper.replicates[0]
         for b in range(1, n_resamples):
-            bootstrap_replicate = median_bootstrapper.bootstrap_replicates[b]
+            bootstrap_replicate = median_bootstrapper.replicates[b]
             if not jnp.allclose(first_value, bootstrap_replicate):
                 all_equal = False
                 break
